@@ -47,57 +47,57 @@ public class ChatClientTest {
     @Test
     public void testCompletionsStream() {
 
-// Create the client
-CompletionsClient completionsClient = new OpenAIClientBuilder()
-        .credential(new KeyCredential(Configuration.getGlobalConfiguration().get("OPENAI_API_KEY")))
-        .buildCompletionsClient();
+        // Create the client
+        CompletionsClient completionsClient = new OpenAIClientBuilder()
+                .credential(new KeyCredential(Configuration.getGlobalConfiguration().get("OPENAI_API_KEY")))
+                .buildCompletionsClient();
 
-// Create the request
-CreateCompletionRequest request = new CreateCompletionRequest(GPT_3_5_TURBO_INSTRUCT, "Who invented the telephone?")
-        .setStream(true)
-        .setMaxTokens(3000L);
-// Create the consumer to handle response events
-Consumer<CreateCompletionResponse> consumer = event ->
-        System.out.println("Event received: eventId" + event.getId() + "; content: " + event.getChoices().get(0).getText());
+        // Create the request
+        CreateCompletionRequest request = new CreateCompletionRequest(GPT_3_5_TURBO_INSTRUCT, "Who invented the telephone?")
+                .setStream(true)
+                .setMaxTokens(3000L);
+        // Create the consumer to handle response events
+        Consumer<CreateCompletionResponse> consumer = event ->
+                System.out.println("Event received: eventId" + event.getId() + "; content: " + event.getChoices().get(0).getText());
 
-// Call the service
-completionsClient.createCompletionStream(request, consumer);
+        // Call the service
+        completionsClient.createCompletionStream(request, consumer);
     }
 
 
     @Test
     public void testCompletionsStreamWithListener() {
-// Create the client
-CompletionsClient completionsClient = new OpenAIClientBuilder()
-        .credential(new KeyCredential(Configuration.getGlobalConfiguration().get("OPENAI_API_KEY")))
-        .buildCompletionsClient();
+        // Create the client
+        CompletionsClient completionsClient = new OpenAIClientBuilder()
+                .credential(new KeyCredential(Configuration.getGlobalConfiguration().get("OPENAI_API_KEY")))
+                .buildCompletionsClient();
 
-// Create the request
-CreateCompletionRequest request = new CreateCompletionRequest(GPT_3_5_TURBO_INSTRUCT, "Who invented the telephone?")
-        .setStream(true)
-        .setMaxTokens(3000L);
-// Create the listener to handle response events
-CreateCompletionResponseListener responseListener = new CreateCompletionResponseListener() {
+        // Create the request
+        CreateCompletionRequest request = new CreateCompletionRequest(GPT_3_5_TURBO_INSTRUCT, "Who invented the telephone?")
+                .setStream(true)
+                .setMaxTokens(3000L);
+        // Create the listener to handle response events
+        CreateCompletionResponseListener responseListener = new CreateCompletionResponseListener() {
 
-    @Override
-    public void onEvent(CreateCompletionResponse responseEvent) {
-        System.out.println("Event received: eventId"
-                + responseEvent.getId() + "; content: " + responseEvent.getChoices().get(0).getText());
-    }
+            @Override
+            public void onEvent(CreateCompletionResponse responseEvent) {
+                System.out.println("Event received: eventId"
+                        + responseEvent.getId() + "; content: " + responseEvent.getChoices().get(0).getText());
+            }
 
-    @Override
-    public void onClose() {
-        System.out.println("Close event");
-    }
+            @Override
+            public void onClose() {
+                System.out.println("Close event");
+            }
 
-    @Override
-    public void onError(Throwable throwable) {
-        System.out.println("Error event " + throwable.getMessage());
-    }
-};
+            @Override
+            public void onError(Throwable throwable) {
+                System.out.println("Error event " + throwable.getMessage());
+            }
+        };
 
-// Call the service
-completionsClient.createCompletionStream(request, responseListener);
+        // Call the service
+        completionsClient.createCompletionStream(request, responseListener);
     }
 
     private static class ChatMessage implements JsonSerializable {
